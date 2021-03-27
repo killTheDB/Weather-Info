@@ -120,7 +120,7 @@ $(document).ready(function () {
             console.log("no pic")
         }
         var secondDiv = $(".secondDiv").css("fontSize", "30");
-        secondDiv.text(Math.ceil(response.main.temp) + "°")
+        secondDiv.text(Math.ceil(response.main.temp) + "°C")
 
         var aboutbox = $(".aboutTitle")
         aboutbox.text(response.name)
@@ -151,14 +151,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var cityInput = $("#city");
     var cityButton = $("#button");
-
-    cityButton.on("click", loadWeather);
+    var selectCelButton = $("#celsius");
+    var selectFahrenButton = $("#fahrenheit");
+    selectCelButton.on("click",selectCelUnits);
+    function selectCelUnits(){
+        console.log(selectCelButton.val());
+        // cityButton.on("click", loadWeatherCel);
+        loadWeatherCel();
+    }
+    selectFahrenButton.on("click",selectFahrenUnits);
+    function selectFahrenUnits(){
+        // cityButton.on("click", loadWeatherFahren);
+        loadWeatherFahren();
+    }
+    cityButton.on("click", loadWeatherCel);
     // cityButton.on("click", loadPhoto);
 
-    function loadWeather() {
+    function loadWeatherCel() {
         var cityName = cityInput.val();
-
         var weatherUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + cityName + '&units=metric&appid=967ceca5dfb9d8a4dba23010c6e885a3';
+
+        $.ajax({
+            url: weatherUrl
+        }).done(function (response) {
+            console.log(response)
+            showWeather(response);
+        }).fail(function (error) {
+            alert("Enter valid city name")
+        })
+
+    }
+
+    function loadWeatherFahren() {
+        var cityName = cityInput.val();
+        var weatherUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + cityName + '&units=imperial&appid=967ceca5dfb9d8a4dba23010c6e885a3';
 
         $.ajax({
             url: weatherUrl
@@ -193,13 +219,14 @@ document.addEventListener("DOMContentLoaded", function () {
         var firstDiv = $(".firstDiv h1");
         firstDiv.text(response.name)
 
+        
+
         var weatherIcon = $(".weatherIcon");
         var todayBg = $(".todayBox");
 
         if (response.weather[0].description == "broken clouds") {
             weatherIcon.html('<img id="theImg" src="images/weather.png" />')
             todayBg.css("background", "url('./images/partlycloud.jpg') no-repeat center/cover")
-
         }
 
         else if (response.weather[0].description == "scattered clouds") {
@@ -214,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         else if (response.weather[0].description == "clear sky") {
             weatherIcon.html('<img id="theImg" src="images/sunrise.jpg" />')
-            todayBg.css("background", "url('./images/clearday.jpg') no-repeat center/cover")
+            // todayBg.css("background", "url('./images/clearday.jpg') no-repeat center/cover")
         }
 
         else if (response.weather[0].description == "light rain") {
@@ -245,10 +272,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         else {
-            console.log("no pic")
+            console.log("no pic");
+            todayBg.css("background", "url('./images/bg.jpg') no-repeat center/cover")
         }
         var secondDiv = $(".secondDiv").css("fontSize", "30");
-        secondDiv.text(Math.ceil(response.main.temp) + "°")
+        secondDiv.text(Math.ceil(response.main.temp) + "°C")
 
         var aboutbox = $(".aboutTitle")
         aboutbox.text(response.name)
