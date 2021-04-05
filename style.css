@@ -2,9 +2,11 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    
+    color: black;
 }
-
+.body{
+    color: black;
+}
 .searchCity {
     height:18vh;
     background:#1F2021;
@@ -165,10 +167,8 @@ h1 {
     background: hsla(0, 0%, 0%, 0.5);
     display:inline-flex;
     flex-wrap: wrap;
-    /* flex-direction: column; */
     align-items: center;
     justify-content: center;
-    /* align-items: baseline; */
 }
 
 .weatherDescription {
@@ -218,8 +218,42 @@ h1 {
     font-size:1.8rem;
 }
 
-@media only screen
-and (min-width : 1280px) {
+h2{
+    margin: 8px 0;
+    text-align: center;
+    text-align: center;
+    background-color: #16a085;
+    color: #fff;
+    padding: 10px 0px;
+}
+
+table{
+    width: 70%;
+    margin-left: 50px;
+    text-align: center;
+}
+
+td{
+    border-color: mediumturquoise;
+}
+
+th, td{
+    display: table-cell;
+    padding: 8px;
+    text-align: center;
+}
+    
+tr {
+        transition: all .2s ease-in;
+        cursor: pointer;
+}
+    
+tr:hover {
+        background-color: #f5f5f5;
+        transform: scale(1.0);
+        box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2), -1px -1px 8px rgba(0, 0, 0, 0.2);
+}
+@media only screen and (min-width : 1280px) {
     .datetime{
     width:20%;
     height:65vh;
@@ -231,26 +265,83 @@ and (min-width : 1280px) {
     justify-content: center;
     }
     .date{
-        font-size: 2vw;
+        font-size: 2em;
     }
     .time{
-        font-size: 2vw;
+        font-size: 2em;
     }
 }
 
-@media only screen
-and (max-width : 320px) {
+@media only screen and (max-width : 320px) {
     .datetime {
         width:100%;
         height: 10vh;
     }
     .date{
-        font-size: 5vw;
+        font-size: 1em;
     }
     .time{
-        font-size: 5vw;
+        font-size: 1em;
+    }
+    .weatherDescription{
+        font-size: 1em;
+    }
+    .pressure{
+        font-size: 1em;
+    }
+    .humidity{
+        font-size: 1em;
+    }
+    .wind{
+        font-size: 1em;
     }
     .aboutBox{
-        display:none;
+        height: 18vh;
     }
+}
+
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px)  {
+    table, thead, tbody, th, td, tr {
+		display: block;
+        text-align: center;
+	}
+	thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+
+    tr {
+      margin: 0 0 1rem 0;
+    }
+      
+    tr:nth-child(odd) {
+      background: #ccc;
+    }
+    
+	td {
+		border: none;
+		border-bottom: 1px solid #eee;
+		position: relative;
+		padding-left: 50%;
+        text-align: center;
+	}
+
+	td:before {
+		position: absolute;
+		top: 1;
+		left: 6px;
+		width: 45%;
+		padding-right: 10px;
+		white-space: nowrap;
+        text-align: center;
+	}
+    td:nth-of-type(1):before { content: "DAY"; }
+    td:nth-of-type(2):before { content: "Day1"; }
+	td:nth-of-type(3):before { content: "Day2"; }
+	td:nth-of-type(4):before { content: "Day3"; }
+	td:nth-of-type(5):before { content: "Day4"; }
+	td:nth-of-type(6):before { content: "Day5"; }
+	td:nth-of-type(7):before { content: "Day6"; }
+	td:nth-of-type(8):before { content: "Day7"; }
 }

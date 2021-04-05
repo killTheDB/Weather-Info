@@ -165,6 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
         loadWeatherFahren();
     }
     cityButton.on("click", loadWeatherCel);
+    cityButton.on("click", foreCast);
     // cityButton.on("click", loadPhoto);
 
     function loadWeatherCel() {
@@ -176,6 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }).done(function (response) {
             console.log(response)
             showWeather(response);
+            foreCast(response);
         }).fail(function (error) {
             alert("Enter valid city name")
         })
@@ -191,6 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }).done(function (response) {
             console.log(response)
             showWeather(response);
+            foreCast(response);
         }).fail(function (error) {
             alert("Enter valid city name")
         })
@@ -293,14 +296,76 @@ document.addEventListener("DOMContentLoaded", function () {
         var press = $(".pressure")
         press.html('<img id="theImg" src="./images/pressure.png" />' + response.main.pressure + " hPa")
     }
-    
-    //      function viewWeather(elem) {
-    //    for(var i = 0 ; i < elem; i++) {
-    //        var li = $('<li>').text(elem.clouds);
-    //        var h3 = $('<h3>').text(elem.name);
-    //        addThis.append(li);
-    //       addThis.append(h3);
-    //    };
-    //  }
-    //    viewWeather();
+
+    function foreCast(response){
+        var geoLon = response.coord.lon;
+        var geoLat = response.coord.lat;
+        var forecastUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat='+geoLat+'&lon='+geoLon+'&exclude=hourly,minutely,alerts,current&units=metric&appid=967ceca5dfb9d8a4dba23010c6e885a3';
+
+        $.ajax({
+            url: forecastUrl
+        }).done(function (forecastresponse) {
+            console.log(forecastresponse)
+            displayForecast(forecastresponse);
+        }).fail(function (error) {
+            alert("Forecast unavailable")
+        })
+    }
+
+    function displayForecast(forecastresponse){
+
+        var unixTimeStamp = forecastresponse.daily[1].dt;
+        document.getElementById('day1').innerHTML = displayDate(forecastresponse.daily[1].dt);
+        document.getElementById('day2').innerHTML = displayDate(forecastresponse.daily[2].dt);
+        document.getElementById('day3').innerHTML = displayDate(forecastresponse.daily[3].dt);
+        document.getElementById('day4').innerHTML = displayDate(forecastresponse.daily[4].dt);
+        document.getElementById('day5').innerHTML = displayDate(forecastresponse.daily[5].dt);
+        document.getElementById('day6').innerHTML = displayDate(forecastresponse.daily[6].dt);
+        document.getElementById('day7').innerHTML = displayDate(forecastresponse.daily[7].dt);
+
+        document.getElementById('cell1-1').innerHTML = forecastresponse.daily[1].temp.min;
+        document.getElementById('cell2-1').innerHTML = forecastresponse.daily[2].temp.min;
+        document.getElementById('cell3-1').innerHTML = forecastresponse.daily[3].temp.min;
+        document.getElementById('cell4-1').innerHTML = forecastresponse.daily[4].temp.min;
+        document.getElementById('cell5-1').innerHTML = forecastresponse.daily[5].temp.min;
+        document.getElementById('cell6-1').innerHTML = forecastresponse.daily[6].temp.min;
+        document.getElementById('cell7-1').innerHTML = forecastresponse.daily[7].temp.min;
+
+        document.getElementById('cell1-2').innerHTML = forecastresponse.daily[1].temp.max;
+        document.getElementById('cell2-2').innerHTML = forecastresponse.daily[2].temp.max;
+        document.getElementById('cell3-2').innerHTML = forecastresponse.daily[3].temp.max;
+        document.getElementById('cell4-2').innerHTML = forecastresponse.daily[4].temp.max;
+        document.getElementById('cell5-2').innerHTML = forecastresponse.daily[5].temp.max;
+        document.getElementById('cell6-2').innerHTML = forecastresponse.daily[6].temp.max;
+        document.getElementById('cell7-2').innerHTML = forecastresponse.daily[7].temp.max;
+        
+        document.getElementById('cell1-3').innerHTML = forecastresponse.daily[1].humidity;
+        document.getElementById('cell2-3').innerHTML = forecastresponse.daily[2].humidity;
+        document.getElementById('cell3-3').innerHTML = forecastresponse.daily[3].humidity;
+        document.getElementById('cell4-3').innerHTML = forecastresponse.daily[4].humidity;
+        document.getElementById('cell5-3').innerHTML = forecastresponse.daily[5].humidity;
+        document.getElementById('cell6-3').innerHTML = forecastresponse.daily[6].humidity;
+        document.getElementById('cell7-3').innerHTML = forecastresponse.daily[7].humidity;
+
+        document.getElementById('cell1-4').innerHTML = forecastresponse.daily[1].pressure;
+        document.getElementById('cell2-4').innerHTML = forecastresponse.daily[2].pressure;
+        document.getElementById('cell3-4').innerHTML = forecastresponse.daily[3].pressure;
+        document.getElementById('cell4-4').innerHTML = forecastresponse.daily[4].pressure;
+        document.getElementById('cell5-4').innerHTML = forecastresponse.daily[5].pressure;
+        document.getElementById('cell6-4').innerHTML = forecastresponse.daily[6].pressure;
+        document.getElementById('cell7-4').innerHTML = forecastresponse.daily[7].pressure;
+    }
+
+    function displayDate(unixTimeStamp){
+        var date = parseInt(unixTimeStamp) * 1000;
+        const dateObject = new Date(date)
+        var humanDay = dateObject.toLocaleString("en-US", { day: "2-digit" })
+        var humanMonth = dateObject.toLocaleString("en-US", { month: "2-digit" })
+        var humanYear = dateObject.toLocaleString("en-US", { year: "numeric" })
+        var humanWeek = dateObject.toLocaleString("en-US", { weekday: "short" })
+        // console.log(typeof(humanYear))
+
+        return humanDay+"/"+humanMonth+"/"+humanYear+" "+humanWeek
+
+    }
 })
