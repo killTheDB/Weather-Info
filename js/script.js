@@ -2,6 +2,27 @@ var geoLat;
 var geoLng;
 var geoAcc;
 $(document).ready(function () {
+    $(document).bind("contextmenu", function (e) {
+        alert('Contact me for source code')
+        return false;
+    });
+});
+document.onkeydown = function (e) {
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+        alert('Contact me for source code')
+        return false;
+    }
+    if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+        alert('Contact me for source code')
+        return false;
+    }
+    if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+        alert('Contact me for source code')
+        return false;
+    }
+}
+
+$(document).ready(function () {
     if (navigator.geolocation) {
         // Request the current position
         // If successful, call getPosSuccess; On error, call getPosErr
@@ -25,7 +46,8 @@ $(document).ready(function () {
             url: weatherUrl2
         }).done(function (response2) {
             console.log(response2)
-            showWeather(response2);
+            showWeather(response2)
+            foreCast(response2)
         }).fail(function (error) {
             alert("Location Services currently not available")
         })
@@ -143,7 +165,84 @@ $(document).ready(function () {
         var time = $(".time h4")
 
         date.text(response.date)
+        date.css("color","whitesmoke")
         time.text(response.time_12)
+        time.css("color", "whitesmoke")
+    }
+
+    function foreCast(response) {
+        var geoLon = response.coord.lon;
+        var geoLat = response.coord.lat;
+        var forecastUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + geoLat + '&lon=' + geoLon + '&exclude=hourly,minutely,alerts,current&units=metric&appid=967ceca5dfb9d8a4dba23010c6e885a3';
+
+        $.ajax({
+            url: forecastUrl
+        }).done(function (forecastresponse) {
+            console.log(forecastresponse)
+            displayForecast(forecastresponse);
+        }).fail(function (error) {
+            alert("Forecast unavailable")
+        })
+    }
+
+    function displayForecast(forecastresponse) {
+
+        var unixTimeStamp = forecastresponse.daily[1].dt;
+        document.getElementById('day1').innerHTML = displayDate(forecastresponse.daily[1].dt);
+        document.getElementById('day2').innerHTML = displayDate(forecastresponse.daily[2].dt);
+        document.getElementById('day3').innerHTML = displayDate(forecastresponse.daily[3].dt);
+        document.getElementById('day4').innerHTML = displayDate(forecastresponse.daily[4].dt);
+        document.getElementById('day5').innerHTML = displayDate(forecastresponse.daily[5].dt);
+        document.getElementById('day6').innerHTML = displayDate(forecastresponse.daily[6].dt);
+        document.getElementById('day7').innerHTML = displayDate(forecastresponse.daily[7].dt);
+
+        document.getElementById('cell1-1').innerHTML = forecastresponse.daily[1].temp.min + " °C";
+        document.getElementById('cell2-1').innerHTML = forecastresponse.daily[1].temp.max + " °C";
+        document.getElementById('cell3-1').innerHTML = forecastresponse.daily[1].humidity + " %";
+        document.getElementById('cell4-1').innerHTML = forecastresponse.daily[1].pressure + " hPa";
+
+        document.getElementById('cell1-2').innerHTML = forecastresponse.daily[2].temp.min + " °C";
+        document.getElementById('cell2-2').innerHTML = forecastresponse.daily[2].temp.max + " °C";
+        document.getElementById('cell3-2').innerHTML = forecastresponse.daily[2].humidity + " %";
+        document.getElementById('cell4-2').innerHTML = forecastresponse.daily[2].pressure + " hPa";
+
+        document.getElementById('cell1-3').innerHTML = forecastresponse.daily[3].temp.min + " °C";
+        document.getElementById('cell2-3').innerHTML = forecastresponse.daily[3].temp.max + " °C";
+        document.getElementById('cell3-3').innerHTML = forecastresponse.daily[3].humidity + " %";
+        document.getElementById('cell4-3').innerHTML = forecastresponse.daily[3].pressure + " hPa";
+
+        document.getElementById('cell1-4').innerHTML = forecastresponse.daily[4].temp.min + " °C";
+        document.getElementById('cell2-4').innerHTML = forecastresponse.daily[4].temp.max + " °C";
+        document.getElementById('cell3-4').innerHTML = forecastresponse.daily[4].humidity + " %";
+        document.getElementById('cell4-4').innerHTML = forecastresponse.daily[4].pressure + " hPa";
+
+        document.getElementById('cell1-5').innerHTML = forecastresponse.daily[5].temp.min + " °C";
+        document.getElementById('cell2-5').innerHTML = forecastresponse.daily[5].temp.max + " °C";
+        document.getElementById('cell3-5').innerHTML = forecastresponse.daily[5].humidity + " %";
+        document.getElementById('cell4-5').innerHTML = forecastresponse.daily[5].pressure + " hPa";
+
+        document.getElementById('cell1-6').innerHTML = forecastresponse.daily[6].temp.min + " °C";
+        document.getElementById('cell2-6').innerHTML = forecastresponse.daily[6].temp.max + " °C";
+        document.getElementById('cell3-6').innerHTML = forecastresponse.daily[6].humidity + " %";
+        document.getElementById('cell4-6').innerHTML = forecastresponse.daily[6].pressure + " hPa";
+
+        document.getElementById('cell1-7').innerHTML = forecastresponse.daily[7].temp.min + " °C";
+        document.getElementById('cell2-7').innerHTML = forecastresponse.daily[7].temp.max + " °C";
+        document.getElementById('cell3-7').innerHTML = forecastresponse.daily[7].humidity + " %";
+        document.getElementById('cell4-7').innerHTML = forecastresponse.daily[7].pressure + " hPa";
+    }
+
+    function displayDate(unixTimeStamp) {
+        var date = parseInt(unixTimeStamp) * 1000;
+        const dateObject = new Date(date)
+        var humanDay = dateObject.toLocaleString("en-US", { day: "2-digit" })
+        var humanMonth = dateObject.toLocaleString("en-US", { month: "2-digit" })
+        var humanYear = dateObject.toLocaleString("en-US", { year: "numeric" })
+        var humanWeek = dateObject.toLocaleString("en-US", { weekday: "short" })
+        // console.log(typeof(humanYear))
+
+        return humanDay + "/" + humanMonth + "/" + humanYear + " " + humanWeek
+
     }
 });
 
@@ -176,8 +275,9 @@ document.addEventListener("DOMContentLoaded", function () {
             url: weatherUrl
         }).done(function (response) {
             console.log(response)
-            showWeather(response);
-            foreCast(response);
+            dateTime(response)
+            showWeather(response)
+            foreCast(response)
         }).fail(function (error) {
             alert("Enter valid city name")
         })
@@ -192,30 +292,39 @@ document.addEventListener("DOMContentLoaded", function () {
             url: weatherUrl
         }).done(function (response) {
             console.log(response)
-            showWeather(response);
-            foreCast(response);
+            dateTime(response)
+            showWeather(response)
+            foreCast(response)
         }).fail(function (error) {
             alert("Enter valid city name")
         })
 
     }
 
-    // function loadPhoto() {
-    //     var cityName = cityInput.val();
-    //     var imageUrl = "https://pixabay.com/api/?key=6693953-e4507e0a76d195de0ac10cf8f&q=" + cityName + "&image_type=photo";
-    //     $.ajax({
-    //         url: imageUrl
-    //     }).done(function (response) {
-    //         console.log(response)
-    //         showPhoto(response)
-    //     }).fail(function (error) {
-    //         console.log("Enter valid city name")
-    //     })
-    // }
+    
+    function dateTime(response) {
+        var geoLat = response.coord.lat
+        var geoLon = response.coord.lon
+        var datetimeUrl = 'https://api.ipgeolocation.io/timezone?apiKey=e6c87eb235564535909983aa9fc6d07c&lat=' + geoLat + '&long=' + geoLon;
+        $.ajax({
+            url: datetimeUrl
+        }).done(function (response3) {
+            console.log(response3)
+            showDateTime(response3)
+        }).fail(function (error) {
+            alert("Date and Time not available")
+        })
+    }
 
-    // function showPhoto(response) {
-    //     $(".cityPhoto").html("<img src=" + response.hits[Math.floor(Math.random() * response.hits.length)].webformatURL + "/>")
-    // }
+    function showDateTime(response) {
+        var date = $(".date h4")
+        var time = $(".time h4")
+
+        date.text(response.date)
+        date.css("color", "whitesmoke")
+        time.text(response.time_12)
+        time.css("color", "whitesmoke")
+    }
 
     function showWeather(response) {
 
@@ -323,37 +432,40 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('day6').innerHTML = displayDate(forecastresponse.daily[6].dt);
         document.getElementById('day7').innerHTML = displayDate(forecastresponse.daily[7].dt);
 
-        document.getElementById('cell1-1').innerHTML = forecastresponse.daily[1].temp.min;
-        document.getElementById('cell2-1').innerHTML = forecastresponse.daily[2].temp.min;
-        document.getElementById('cell3-1').innerHTML = forecastresponse.daily[3].temp.min;
-        document.getElementById('cell4-1').innerHTML = forecastresponse.daily[4].temp.min;
-        document.getElementById('cell5-1').innerHTML = forecastresponse.daily[5].temp.min;
-        document.getElementById('cell6-1').innerHTML = forecastresponse.daily[6].temp.min;
-        document.getElementById('cell7-1').innerHTML = forecastresponse.daily[7].temp.min;
+        document.getElementById('cell1-1').innerHTML = forecastresponse.daily[1].temp.min +" °C";
+        document.getElementById('cell2-1').innerHTML = forecastresponse.daily[1].temp.max +" °C";
+        document.getElementById('cell3-1').innerHTML = forecastresponse.daily[1].humidity+" %";
+        document.getElementById('cell4-1').innerHTML = forecastresponse.daily[1].pressure+" hPa";
 
-        document.getElementById('cell1-2').innerHTML = forecastresponse.daily[1].temp.max;
-        document.getElementById('cell2-2').innerHTML = forecastresponse.daily[2].temp.max;
-        document.getElementById('cell3-2').innerHTML = forecastresponse.daily[3].temp.max;
-        document.getElementById('cell4-2').innerHTML = forecastresponse.daily[4].temp.max;
-        document.getElementById('cell5-2').innerHTML = forecastresponse.daily[5].temp.max;
-        document.getElementById('cell6-2').innerHTML = forecastresponse.daily[6].temp.max;
-        document.getElementById('cell7-2').innerHTML = forecastresponse.daily[7].temp.max;
+        document.getElementById('cell1-2').innerHTML = forecastresponse.daily[2].temp.min +" °C";
+        document.getElementById('cell2-2').innerHTML = forecastresponse.daily[2].temp.max +" °C";
+        document.getElementById('cell3-2').innerHTML = forecastresponse.daily[2].humidity+" %";
+        document.getElementById('cell4-2').innerHTML = forecastresponse.daily[2].pressure+" hPa";
         
-        document.getElementById('cell1-3').innerHTML = forecastresponse.daily[1].humidity;
-        document.getElementById('cell2-3').innerHTML = forecastresponse.daily[2].humidity;
-        document.getElementById('cell3-3').innerHTML = forecastresponse.daily[3].humidity;
-        document.getElementById('cell4-3').innerHTML = forecastresponse.daily[4].humidity;
-        document.getElementById('cell5-3').innerHTML = forecastresponse.daily[5].humidity;
-        document.getElementById('cell6-3').innerHTML = forecastresponse.daily[6].humidity;
-        document.getElementById('cell7-3').innerHTML = forecastresponse.daily[7].humidity;
+        document.getElementById('cell1-3').innerHTML = forecastresponse.daily[3].temp.min +" °C";
+        document.getElementById('cell2-3').innerHTML = forecastresponse.daily[3].temp.max +" °C";
+        document.getElementById('cell3-3').innerHTML = forecastresponse.daily[3].humidity+" %";
+        document.getElementById('cell4-3').innerHTML = forecastresponse.daily[3].pressure+" hPa";
 
-        document.getElementById('cell1-4').innerHTML = forecastresponse.daily[1].pressure;
-        document.getElementById('cell2-4').innerHTML = forecastresponse.daily[2].pressure;
-        document.getElementById('cell3-4').innerHTML = forecastresponse.daily[3].pressure;
-        document.getElementById('cell4-4').innerHTML = forecastresponse.daily[4].pressure;
-        document.getElementById('cell5-4').innerHTML = forecastresponse.daily[5].pressure;
-        document.getElementById('cell6-4').innerHTML = forecastresponse.daily[6].pressure;
-        document.getElementById('cell7-4').innerHTML = forecastresponse.daily[7].pressure;
+        document.getElementById('cell1-4').innerHTML = forecastresponse.daily[4].temp.min +" °C";
+        document.getElementById('cell2-4').innerHTML = forecastresponse.daily[4].temp.max +" °C";
+        document.getElementById('cell3-4').innerHTML = forecastresponse.daily[4].humidity+" %";
+        document.getElementById('cell4-4').innerHTML = forecastresponse.daily[4].pressure+" hPa";
+
+        document.getElementById('cell1-5').innerHTML = forecastresponse.daily[5].temp.min +" °C";
+        document.getElementById('cell2-5').innerHTML = forecastresponse.daily[5].temp.max +" °C";
+        document.getElementById('cell3-5').innerHTML = forecastresponse.daily[5].humidity+" %";
+        document.getElementById('cell4-5').innerHTML = forecastresponse.daily[5].pressure+" hPa";
+
+        document.getElementById('cell1-6').innerHTML = forecastresponse.daily[6].temp.min +" °C";
+        document.getElementById('cell2-6').innerHTML = forecastresponse.daily[6].temp.max +" °C";
+        document.getElementById('cell3-6').innerHTML = forecastresponse.daily[6].humidity+" %";
+        document.getElementById('cell4-6').innerHTML = forecastresponse.daily[6].pressure+" hPa";
+
+        document.getElementById('cell1-7').innerHTML = forecastresponse.daily[7].temp.min +" °C";
+        document.getElementById('cell2-7').innerHTML = forecastresponse.daily[7].temp.max +" °C";
+        document.getElementById('cell3-7').innerHTML = forecastresponse.daily[7].humidity+" %";
+        document.getElementById('cell4-7').innerHTML = forecastresponse.daily[7].pressure+" hPa";
     }
 
     function displayDate(unixTimeStamp){
